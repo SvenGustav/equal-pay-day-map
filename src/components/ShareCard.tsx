@@ -73,8 +73,7 @@ export function ShareCard(props: Props) {
           {props.equalPayDay}
         </div>
         <div className="mt-2 max-w-[32ch] font-display text-xl italic leading-snug text-muted-foreground">
-          The day in {props.year + 1} women in {props.country} catch up to men's {props.year}
-          earnings — {props.daysUnpaid} days in, a {props.gap.toFixed(1)}% gap.
+          The day in {props.year + 1} women in {props.country} catch up to men's {props.year} earnings — {props.daysUnpaid} days in, a {props.gap.toFixed(1)}% gap.
         </div>
 
         <div className="mt-6 grid grid-cols-2 gap-4 border-t border-border pt-4">
