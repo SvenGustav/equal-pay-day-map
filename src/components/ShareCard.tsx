@@ -1,8 +1,10 @@
 import { useRef, useState } from "react";
 import { toPng } from "html-to-image";
+import { HistoryChart } from "./HistoryChart";
 
 interface Props {
   country: string;
+  iso2: string;
   gap: number;
   year: number;
   salary: number;
@@ -96,7 +98,19 @@ export function ShareCard(props: Props) {
           </div>
         </div>
 
-        <div className="mt-6 text-[10px] uppercase tracking-widest text-muted-foreground">
+        <div className="mt-6 border-t border-border pt-4">
+          <div className="mb-2 flex items-baseline justify-between">
+            <div className="text-[10px] uppercase tracking-widest text-muted-foreground">
+              Equal Pay Day · history
+            </div>
+            <div className="text-[10px] uppercase tracking-widest text-muted-foreground">
+              {props.country}
+            </div>
+          </div>
+          <HistoryChart iso2={props.iso2} highlightYear={props.year} />
+        </div>
+
+        <div className="mt-4 text-[10px] uppercase tracking-widest text-muted-foreground">
           Source: Eurostat TESEM180 · paygap.eu
         </div>
       </div>
