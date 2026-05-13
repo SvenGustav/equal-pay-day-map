@@ -107,6 +107,48 @@ export function CountrySummary({
           )}
         </div>
 
+        {progress && (
+          <div className="mt-4 rounded-md bg-[var(--accent-magenta)]/10 px-3 py-2 text-sm text-foreground/85">
+            Since <span className="font-semibold">{progress.firstY}</span>, the
+            gap in {country.country} has{" "}
+            {progress.gapDelta > 0 ? (
+              <>
+                narrowed from{" "}
+                <span className="font-semibold">{progress.firstGap.toFixed(1)}%</span>{" "}
+                to{" "}
+                <span className="font-semibold">{progress.lastGap.toFixed(1)}%</span>
+                {" "}— Equal Pay Day moved from{" "}
+                <span className="font-semibold">{progress.firstDate}</span> to{" "}
+                <span className="font-semibold">{progress.lastDate}</span>,{" "}
+                <span className="font-semibold text-[var(--accent-magenta)]">
+                  {progress.delta} days earlier
+                </span>
+                .
+              </>
+            ) : progress.gapDelta < 0 ? (
+              <>
+                widened from{" "}
+                <span className="font-semibold">{progress.firstGap.toFixed(1)}%</span>{" "}
+                to{" "}
+                <span className="font-semibold">{progress.lastGap.toFixed(1)}%</span>
+                {" "}— Equal Pay Day shifted from{" "}
+                <span className="font-semibold">{progress.firstDate}</span> to{" "}
+                <span className="font-semibold">{progress.lastDate}</span>,{" "}
+                <span className="font-semibold text-[var(--accent-magenta)]">
+                  {Math.abs(progress.delta)} days later
+                </span>
+                .
+              </>
+            ) : (
+              <>
+                stayed flat at{" "}
+                <span className="font-semibold">{progress.lastGap.toFixed(1)}%</span>
+                .
+              </>
+            )}
+          </div>
+        )}
+
         <div className="mt-5 border-t border-[var(--accent-magenta)]/20 pt-4">
           <div className="mb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--accent-magenta)]/80">
             History · hover to inspect
