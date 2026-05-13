@@ -9,6 +9,8 @@ interface Props {
   womensEarnings: number;
   annualGap: number;
   currency: string;
+  equalPayDay: string;
+  daysUnpaid: number;
 }
 
 export function ShareCard(props: Props) {
@@ -35,7 +37,7 @@ export function ShareCard(props: Props) {
   };
 
   const handleShare = async () => {
-    const text = `In ${props.country}, women earn ${props.gap.toFixed(1)}% less on average. On a ${props.currency}${fmt(props.salary)} salary, that's ${props.currency}${fmt(props.annualGap)} unpaid per year.`;
+    const text = `Equal Pay Day in ${props.country}: ${props.equalPayDay}. From this date, women effectively work unpaid for the rest of the year (${props.daysUnpaid} days, ${props.gap.toFixed(1)}% gap).`;
     if (navigator.share) {
       try {
         await navigator.share({ title: "EU Pay Gap", text });
@@ -63,13 +65,14 @@ export function ShareCard(props: Props) {
         }}
       >
         <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--accent-magenta)]">
-          The unpaid year · {props.country}
+          Equal Pay Day · {props.country}
         </div>
         <div className="mt-4 font-display text-6xl leading-[0.95] text-foreground">
-          {props.gap.toFixed(1)}%
+          {props.equalPayDay}
         </div>
-        <div className="mt-2 max-w-[28ch] font-display text-xl italic leading-snug text-muted-foreground">
-          gender pay gap, women vs men, {props.year}
+        <div className="mt-2 max-w-[32ch] font-display text-xl italic leading-snug text-muted-foreground">
+          From this date, women work the rest of {new Date().getFullYear()}{" "}
+          unpaid — {props.daysUnpaid} days, a {props.gap.toFixed(1)}% gap.
         </div>
 
         <div className="mt-6 grid grid-cols-2 gap-4 border-t border-border pt-4">
