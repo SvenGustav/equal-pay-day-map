@@ -9,7 +9,7 @@ interface Props {
   onSelectIso: (iso: string) => void;
 }
 
-const EPD_YEAR = 2025;
+const EPD_YEAR = 2026;
 
 export function Calculator({ selectedIso2, onSelectIso }: Props) {
   const [salary, setSalary] = useState<number>(50000);

@@ -13,7 +13,7 @@ interface Props {
 
 const WIDTH = 760;
 const HEIGHT = 720;
-const LABEL_YEAR = 2025;
+const LABEL_YEAR = 2026;
 
 export function EuropeMap({ selectedIso2, onSelect }: Props) {
   const [hover, setHover] = useState<{
