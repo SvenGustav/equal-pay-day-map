@@ -2,11 +2,14 @@ import { useMemo, useState } from "react";
 import { PAY_GAP } from "@/data/payGap";
 import { COUNTRY_CURRENCY } from "@/data/payGap";
 import { ShareCard } from "./ShareCard";
+import { equalPayDayFromGap, formatEPD, daysUnpaid } from "@/lib/equalPayDay";
 
 interface Props {
   selectedIso2: string | null;
   onSelectIso: (iso: string) => void;
 }
+
+const EPD_YEAR = 2025;
 
 export function Calculator({ selectedIso2, onSelectIso }: Props) {
   const [salary, setSalary] = useState<number>(50000);
@@ -19,7 +22,9 @@ export function Calculator({ selectedIso2, onSelectIso }: Props) {
   const currency = COUNTRY_CURRENCY[entry.isoA2] ?? { code: "EUR", symbol: "€" };
   const womensEarnings = salary * (1 - entry.gap / 100);
   const annualGap = salary - womensEarnings;
-  const equalPayDay = Math.round((entry.gap / 100) * 365);
+  const epd = equalPayDayFromGap(entry.gap, EPD_YEAR);
+  const epdLong = formatEPD(epd, { month: "long", day: "numeric" });
+  const unpaid = daysUnpaid(entry.gap, EPD_YEAR);
 
   const fmt = (n: number) =>
     new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }).format(Math.round(n));
@@ -71,16 +76,28 @@ export function Calculator({ selectedIso2, onSelectIso }: Props) {
         />
       </div>
 
+      <div className="rounded-lg border border-[var(--accent-magenta)]/30 bg-[var(--accent-magenta)]/5 p-5">
+        <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--accent-magenta)]">
+          Equal Pay Day · {EPD_YEAR}
+        </div>
+        <div className="mt-1 font-display text-5xl leading-none text-foreground">
+          {epdLong}
+        </div>
+        <div className="mt-2 text-sm text-muted-foreground">
+          From this date until 31 December, women in {entry.country} effectively
+          work <em className="text-foreground">unpaid</em> compared with men —{" "}
+          <span className="font-semibold text-foreground">{unpaid} days</span>{" "}
+          of the year.
+        </div>
+      </div>
+
       <div className="grid grid-cols-2 gap-3 border-t border-border pt-6">
         <Stat label="Pay gap" value={`${entry.gap.toFixed(1)}%`} accent />
         <Stat label="Reference year" value={String(entry.year)} />
         <Stat label="A man earns" value={`${currency.symbol}${fmt(salary)}`} />
         <Stat label="A woman earns" value={`${currency.symbol}${fmt(womensEarnings)}`} accent />
         <Stat label="Annual difference" value={`${currency.symbol}${fmt(annualGap)}`} />
-        <Stat
-          label="Equal pay day"
-          value={equalPayDay > 0 ? `${equalPayDay} days unpaid` : "Reached"}
-        />
+        <Stat label="Days unpaid" value={`${unpaid} of 365`} />
       </div>
 
       <ShareCard
@@ -91,6 +108,8 @@ export function Calculator({ selectedIso2, onSelectIso }: Props) {
         womensEarnings={womensEarnings}
         annualGap={annualGap}
         currency={currency.symbol}
+        equalPayDay={epdLong}
+        daysUnpaid={unpaid}
       />
     </div>
   );

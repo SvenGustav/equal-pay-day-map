@@ -9,6 +9,8 @@ interface Props {
   womensEarnings: number;
   annualGap: number;
   currency: string;
+  equalPayDay: string;
+  daysUnpaid: number;
 }
 
 export function ShareCard(props: Props) {
