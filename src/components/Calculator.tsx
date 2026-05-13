@@ -42,6 +42,31 @@ export function CountrySummary({
     year,
   });
 
+  const progress = useMemo(() => {
+    const series = HISTORICAL_GAP[country.isoA2] ?? {};
+    const years = Object.keys(series).map(Number).sort((a, b) => a - b);
+    if (years.length < 2) return null;
+    const firstY = years[0];
+    const lastY = years[years.length - 1];
+    const firstGap = series[firstY];
+    const lastGap = series[lastY];
+    const firstEpd = equalPayDayFromGap(firstGap, firstY + 1);
+    const lastEpd = equalPayDayFromGap(lastGap, lastY + 1);
+    const firstDays = daysUnpaid(firstGap, firstY + 1);
+    const lastDays = daysUnpaid(lastGap, lastY + 1);
+    const delta = firstDays - lastDays; // positive = improvement
+    return {
+      firstY,
+      lastY,
+      firstGap,
+      lastGap,
+      firstDate: formatEPD(firstEpd, { month: "short", day: "numeric" }),
+      lastDate: formatEPD(lastEpd, { month: "short", day: "numeric" }),
+      delta,
+      gapDelta: firstGap - lastGap,
+    };
+  }, [country.isoA2]);
+
   return (
     <div className="flex h-full flex-col space-y-5">
       <div>
