@@ -98,7 +98,7 @@ export function ShareCard(props: Props) {
         </div>
 
         <div className="mt-6 text-[10px] uppercase tracking-widest text-muted-foreground">
-          Source: Eurostat TESEM180 · paygap.eu
+          Source: Eurostat TESEM180 · The Unpaid Year
         </div>
       </div>
 
