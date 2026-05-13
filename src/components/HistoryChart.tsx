@@ -199,14 +199,23 @@ export function HistoryChart({ iso2, highlightYear }: Props) {
 
       {tooltip && activeIsHover && (
         <div
-          className="pointer-events-none absolute z-10 -translate-x-1/2 -translate-y-[110%] rounded-md border border-border bg-background px-2.5 py-1.5 text-xs shadow-lg"
-          style={{ left: `${tooltip.leftPct}%`, top: `${tooltip.topPct}%` }}
+          className="pointer-events-none absolute z-10 -translate-y-[110%] whitespace-nowrap rounded-md border border-border bg-background px-3 py-2 text-sm shadow-lg"
+          style={{
+            left: `${tooltip.leftPct}%`,
+            top: `${tooltip.topPct}%`,
+            transform:
+              tooltip.leftPct > 75
+                ? "translate(-100%, -110%) translateX(-8px)"
+                : tooltip.leftPct < 25
+                ? "translate(0%, -110%) translateX(8px)"
+                : "translate(-50%, -110%)",
+          }}
         >
-          <div className="font-display text-sm leading-none">
+          <div className="font-display text-base leading-none">
             {tooltip.date}{" "}
             <span className="text-muted-foreground">{tooltip.year + 1}</span>
           </div>
-          <div className="mt-0.5 text-[10px] text-muted-foreground">
+          <div className="mt-1 text-xs text-muted-foreground">
             ref. {tooltip.year} · {tooltip.gap.toFixed(1)}% gap
           </div>
         </div>
