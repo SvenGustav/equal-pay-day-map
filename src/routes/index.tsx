@@ -28,7 +28,7 @@ function Index() {
       <header className="border-b border-border">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
           <div className="flex items-baseline gap-3">
-            <span className="font-display text-2xl">paygap.eu</span>
+            <span className="font-display text-2xl">The Unpaid Year</span>
             <span className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
               Eurostat · TESEM180
             </span>
