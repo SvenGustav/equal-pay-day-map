@@ -72,14 +72,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
+      { title: "Equal Pay Day Map for European Countries" },
+      { name: "description", content: "Visualize EU pay gap data with an interactive map and salary calculator." },
       { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { property: "og:title", content: "Equal Pay Day Map for European Countries" },
+      { property: "og:description", content: "Visualize EU pay gap data with an interactive map and salary calculator." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "Equal Pay Day Map for European Countries" },
+      { name: "twitter:description", content: "Visualize EU pay gap data with an interactive map and salary calculator." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/b029a377-51c8-45ac-8038-da58aa8b84f1/id-preview-d684c4d4--cd0e768f-c77c-4cd0-a3bf-fc3266d80453.lovable.app-1778693221232.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/b029a377-51c8-45ac-8038-da58aa8b84f1/id-preview-d684c4d4--cd0e768f-c77c-4cd0-a3bf-fc3266d80453.lovable.app-1778693221232.png" },
     ],
     links: [
       {
