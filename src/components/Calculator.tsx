@@ -113,6 +113,7 @@ export function Calculator({ selectedIso2, onSelectIso, year }: Props) {
 
       <ShareCard
         country={country.country}
+        iso2={country.isoA2}
         gap={gap}
         year={refYear}
         salary={salary}
