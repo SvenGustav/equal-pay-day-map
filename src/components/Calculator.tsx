@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { PAY_GAP, COUNTRY_CURRENCY } from "@/data/payGap";
 import { ShareCard } from "./ShareCard";
+import { HistoryChart } from "./HistoryChart";
 import { equalPayDayFromGap, formatEPD, daysUnpaid } from "@/lib/equalPayDay";
 import { getGapForYear, getNearestGap } from "@/lib/getGap";
 
@@ -99,6 +100,13 @@ export function Calculator({ selectedIso2, onSelectIso, year }: Props) {
               No data for {year}; using nearest year ({refYear}).
             </span>
           )}
+        </div>
+
+        <div className="mt-5 border-t border-[var(--accent-magenta)]/20 pt-4">
+          <div className="mb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--accent-magenta)]/80">
+            History · hover to inspect
+          </div>
+          <HistoryChart iso2={country.isoA2} highlightYear={refYear} />
         </div>
       </div>
 
