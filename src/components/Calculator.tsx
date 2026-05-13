@@ -100,6 +100,13 @@ export function Calculator({ selectedIso2, onSelectIso, year }: Props) {
             </span>
           )}
         </div>
+
+        <div className="mt-5 border-t border-[var(--accent-magenta)]/20 pt-4">
+          <div className="mb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--accent-magenta)]/80">
+            History · hover to inspect
+          </div>
+          <HistoryChart iso2={country.isoA2} highlightYear={refYear} />
+        </div>
       </div>
 
       <div className="grid grid-cols-2 gap-3 border-t border-border pt-6">
