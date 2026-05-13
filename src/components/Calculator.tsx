@@ -4,6 +4,7 @@ import { ShareCard } from "./ShareCard";
 import { HistoryChart } from "./HistoryChart";
 import { equalPayDayFromGap, formatEPD, daysUnpaid } from "@/lib/equalPayDay";
 import { getGapForYear, getNearestGap } from "@/lib/getGap";
+import { HISTORICAL_GAP } from "@/data/historicalGap";
 
 interface BaseProps {
   selectedIso2: string | null;
@@ -40,6 +41,31 @@ export function CountrySummary({
     selectedIso2,
     year,
   });
+
+  const progress = useMemo(() => {
+    const series = HISTORICAL_GAP[country.isoA2] ?? {};
+    const years = Object.keys(series).map(Number).sort((a, b) => a - b);
+    if (years.length < 2) return null;
+    const firstY = years[0];
+    const lastY = years[years.length - 1];
+    const firstGap = series[firstY];
+    const lastGap = series[lastY];
+    const firstEpd = equalPayDayFromGap(firstGap, firstY + 1);
+    const lastEpd = equalPayDayFromGap(lastGap, lastY + 1);
+    const firstDays = daysUnpaid(firstGap, firstY + 1);
+    const lastDays = daysUnpaid(lastGap, lastY + 1);
+    const delta = firstDays - lastDays; // positive = improvement
+    return {
+      firstY,
+      lastY,
+      firstGap,
+      lastGap,
+      firstDate: formatEPD(firstEpd, { month: "short", day: "numeric" }),
+      lastDate: formatEPD(lastEpd, { month: "short", day: "numeric" }),
+      delta,
+      gapDelta: firstGap - lastGap,
+    };
+  }, [country.isoA2]);
 
   return (
     <div className="flex h-full flex-col space-y-5">
@@ -80,6 +106,48 @@ export function CountrySummary({
             </span>
           )}
         </div>
+
+        {progress && (
+          <div className="mt-4 rounded-md bg-[var(--accent-magenta)]/10 px-3 py-2 text-sm text-foreground/85">
+            Since <span className="font-semibold">{progress.firstY}</span>, the
+            gap in {country.country} has{" "}
+            {progress.gapDelta > 0 ? (
+              <>
+                narrowed from{" "}
+                <span className="font-semibold">{progress.firstGap.toFixed(1)}%</span>{" "}
+                to{" "}
+                <span className="font-semibold">{progress.lastGap.toFixed(1)}%</span>
+                {" "}— Equal Pay Day moved from{" "}
+                <span className="font-semibold">{progress.firstDate}</span> to{" "}
+                <span className="font-semibold">{progress.lastDate}</span>,{" "}
+                <span className="font-semibold text-[var(--accent-magenta)]">
+                  {progress.delta} days earlier
+                </span>
+                .
+              </>
+            ) : progress.gapDelta < 0 ? (
+              <>
+                widened from{" "}
+                <span className="font-semibold">{progress.firstGap.toFixed(1)}%</span>{" "}
+                to{" "}
+                <span className="font-semibold">{progress.lastGap.toFixed(1)}%</span>
+                {" "}— Equal Pay Day shifted from{" "}
+                <span className="font-semibold">{progress.firstDate}</span> to{" "}
+                <span className="font-semibold">{progress.lastDate}</span>,{" "}
+                <span className="font-semibold text-[var(--accent-magenta)]">
+                  {Math.abs(progress.delta)} days later
+                </span>
+                .
+              </>
+            ) : (
+              <>
+                stayed flat at{" "}
+                <span className="font-semibold">{progress.lastGap.toFixed(1)}%</span>
+                .
+              </>
+            )}
+          </div>
+        )}
 
         <div className="mt-5 border-t border-[var(--accent-magenta)]/20 pt-4">
           <div className="mb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--accent-magenta)]/80">

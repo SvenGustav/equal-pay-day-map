@@ -167,17 +167,24 @@ export function HistoryChart({ iso2, highlightYear }: Props) {
         )}
 
         {/* In-SVG label for the active point — shows the EPD date */}
-        {active && (
-          <text
-            x={xScale(active.year)}
-            y={Math.max(PAD_T + 10, yScale(active.dayOfYear) - 9)}
-            textAnchor="middle"
-            className="font-display"
-            style={{ fontSize: 11, fill: "var(--accent-magenta)", fontWeight: 600 }}
-          >
-            {formatEPD(active.epd, { month: "short", day: "numeric" })}
-          </text>
-        )}
+        {active && (() => {
+          const ax = xScale(active.year);
+          const rightEdge = W - PAD_R;
+          const leftEdge = PAD_L;
+          const anchor: "start" | "middle" | "end" =
+            ax > rightEdge - 32 ? "end" : ax < leftEdge + 32 ? "start" : "middle";
+          return (
+            <text
+              x={ax}
+              y={Math.max(PAD_T + 10, yScale(active.dayOfYear) - 9)}
+              textAnchor={anchor}
+              className="font-display"
+              style={{ fontSize: 11, fill: "var(--accent-magenta)", fontWeight: 600 }}
+            >
+              {formatEPD(active.epd, { month: "short", day: "numeric" })}
+            </text>
+          );
+        })()}
 
         {/* Invisible hit-test rectangles for hover */}
         {points.map((p) => (
