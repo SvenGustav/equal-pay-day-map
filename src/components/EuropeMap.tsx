@@ -18,7 +18,7 @@ const HEIGHT = 720;
 
 function makeColorScale() {
   return scaleLinear<string>()
-    .domain([0, 30, 75])
+    .domain([0, 45, 115])
     .range(["oklch(0.94 0.03 90)", "oklch(0.75 0.18 30)", "oklch(0.42 0.24 10)"])
     .clamp(true);
 }
@@ -140,7 +140,7 @@ export function EuropeMap({ selectedIso2, onSelect, year }: Props) {
 }
 
 function Legend() {
-  const stops = [0, 15, 30, 45, 60, 75];
+  const stops = [0, 20, 40, 60, 90, 115];
   const scale = makeColorScale();
   return (
     <div className="absolute bottom-2 left-2 rounded-md border border-border bg-background/90 px-3 py-2 text-xs backdrop-blur">
