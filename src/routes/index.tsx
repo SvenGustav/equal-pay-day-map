@@ -44,17 +44,18 @@ function Index() {
       <section className="mx-auto max-w-7xl px-6 pt-16 pb-10">
         <div className="max-w-3xl">
           <div className="text-xs font-semibold uppercase tracking-[0.25em] text-[var(--accent-magenta)]">
-            The Unpaid Year
+            Equal Pay Day · Europe 2025
           </div>
           <h1 className="mt-4 font-display text-6xl leading-[0.95] sm:text-7xl">
-            How much of the year does a woman in Europe work{" "}
-            <em className="text-[var(--accent-magenta)]">for free</em>?
+            The day women across Europe stop earning,{" "}
+            <em className="text-[var(--accent-magenta)]">relative to men</em>.
           </h1>
           <p className="mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground">
-            The unadjusted gender pay gap measures the difference between average
-            gross hourly earnings of male and female employees as a percentage of
-            male earnings. Hover or tap a country, then dial in a salary to see
-            what the gap looks like in cash.
+            Each country is labelled with its <strong className="text-foreground">Equal Pay Day</strong> —
+            the calendar date from which the average woman effectively works
+            unpaid for the rest of the year, given the country's unadjusted
+            gender pay gap. Hover or tap a country, then enter a salary to see
+            what it costs in cash.
           </p>
         </div>
       </section>
