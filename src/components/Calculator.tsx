@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { PAY_GAP, COUNTRY_CURRENCY } from "@/data/payGap";
 import { ShareCard } from "./ShareCard";
+import { HistoryChart } from "./HistoryChart";
 import { equalPayDayFromGap, formatEPD, daysUnpaid } from "@/lib/equalPayDay";
 import { getGapForYear, getNearestGap } from "@/lib/getGap";
 
