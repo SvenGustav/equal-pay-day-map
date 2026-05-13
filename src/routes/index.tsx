@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { EuropeMap } from "@/components/EuropeMap";
-import { Calculator } from "@/components/Calculator";
+import { CountrySummary, SalaryCalculator, ShareablePanel } from "@/components/Calculator";
 import { MIN_YEAR, MAX_YEAR } from "@/lib/getGap";
 
 export const Route = createFileRoute("/")({
@@ -21,6 +21,7 @@ export const Route = createFileRoute("/")({
 function Index() {
   const [selected, setSelected] = useState<string | null>("DE");
   const [year, setYear] = useState<number>(MAX_YEAR);
+  const [salary, setSalary] = useState<number>(50000);
 
   return (
     <main className="min-h-screen bg-background text-foreground">
@@ -66,12 +67,26 @@ function Index() {
         <YearSlider year={year} onChange={setYear} />
       </section>
 
-      <section className="mx-auto grid max-w-7xl grid-cols-1 gap-10 px-6 pb-24 lg:grid-cols-[1.4fr_1fr]">
+      <section className="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-6 pb-10 lg:grid-cols-[1.4fr_1fr]">
         <div className="rounded-xl border border-border bg-background/50 p-2">
           <EuropeMap selectedIso2={selected} onSelect={setSelected} year={year} />
         </div>
         <div className="rounded-xl border border-border bg-secondary/40 p-6">
-          <Calculator selectedIso2={selected} onSelectIso={setSelected} year={year} />
+          <CountrySummary selectedIso2={selected} onSelectIso={setSelected} year={year} />
+        </div>
+      </section>
+
+      <section className="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-6 pb-24 lg:grid-cols-2">
+        <div className="rounded-xl border border-border bg-secondary/40 p-6">
+          <SalaryCalculator
+            selectedIso2={selected}
+            year={year}
+            salary={salary}
+            onSalaryChange={setSalary}
+          />
+        </div>
+        <div className="rounded-xl border border-border bg-background/50 p-6">
+          <ShareablePanel selectedIso2={selected} year={year} salary={salary} />
         </div>
       </section>
 
