@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { toPng } from "html-to-image";
-import { HistoryChart } from "./HistoryChart";
+
 
 interface Props {
   country: string;
