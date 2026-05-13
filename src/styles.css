@@ -62,9 +62,16 @@
 }
 
 :root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.129 0.042 264.695);
+  --radius: 0.5rem;
+  --background: oklch(0.97 0.005 85);
+  --foreground: oklch(0.15 0.02 50);
+  --ink: oklch(0.15 0.02 50);
+  --paper: oklch(0.97 0.005 85);
+  --accent-magenta: oklch(0.58 0.24 0);
+  --accent-amber: oklch(0.78 0.16 70);
+  --map-low: oklch(0.92 0.04 90);
+  --map-mid: oklch(0.72 0.18 40);
+  --map-high: oklch(0.45 0.24 20);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.129 0.042 264.695);
   --popover: oklch(1 0 0);
