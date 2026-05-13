@@ -1,30 +1,36 @@
 import { useMemo, useState } from "react";
-import { PAY_GAP } from "@/data/payGap";
-import { COUNTRY_CURRENCY } from "@/data/payGap";
+import { PAY_GAP, COUNTRY_CURRENCY } from "@/data/payGap";
 import { ShareCard } from "./ShareCard";
 import { equalPayDayFromGap, formatEPD, daysUnpaid } from "@/lib/equalPayDay";
+import { getGapForYear, getNearestGap } from "@/lib/getGap";
 
 interface Props {
   selectedIso2: string | null;
   onSelectIso: (iso: string) => void;
+  year: number;
 }
 
-const EPD_YEAR = 2026;
-
-export function Calculator({ selectedIso2, onSelectIso }: Props) {
+export function Calculator({ selectedIso2, onSelectIso, year }: Props) {
   const [salary, setSalary] = useState<number>(50000);
 
-  const entry = useMemo(
+  const country = useMemo(
     () => PAY_GAP.find((p) => p.isoA2 === selectedIso2) ?? PAY_GAP.find((p) => p.isoA2 === "DE")!,
     [selectedIso2]
   );
 
-  const currency = COUNTRY_CURRENCY[entry.isoA2] ?? { code: "EUR", symbol: "€" };
-  const womensEarnings = salary * (1 - entry.gap / 100);
+  // Try the exact year first; fall back to the nearest available reference year
+  const exact = getGapForYear(country.isoA2, year);
+  const fallback = exact == null ? getNearestGap(country.isoA2, year) : null;
+  const gap = exact ?? fallback?.gap ?? country.gap;
+  const refYear = exact != null ? year : fallback?.year ?? country.year;
+  const epdYear = year + 1;
+
+  const currency = COUNTRY_CURRENCY[country.isoA2] ?? { code: "EUR", symbol: "€" };
+  const womensEarnings = salary * (1 - gap / 100);
   const annualGap = salary - womensEarnings;
-  const epd = equalPayDayFromGap(entry.gap, EPD_YEAR);
+  const epd = equalPayDayFromGap(gap, epdYear);
   const epdLong = formatEPD(epd, { month: "long", day: "numeric" });
-  const unpaid = daysUnpaid(entry.gap, EPD_YEAR);
+  const unpaid = daysUnpaid(gap, epdYear);
 
   const fmt = (n: number) =>
     new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }).format(Math.round(n));
@@ -36,7 +42,7 @@ export function Calculator({ selectedIso2, onSelectIso }: Props) {
           Country
         </label>
         <select
-          value={entry.isoA2}
+          value={country.isoA2}
           onChange={(e) => onSelectIso(e.target.value)}
           className="w-full rounded-md border border-border bg-background px-3 py-2 font-display text-2xl focus:border-accent focus:outline-none"
         >
@@ -78,22 +84,27 @@ export function Calculator({ selectedIso2, onSelectIso }: Props) {
 
       <div className="rounded-lg border border-[var(--accent-magenta)]/30 bg-[var(--accent-magenta)]/5 p-5">
         <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--accent-magenta)]">
-          Equal Pay Day · {EPD_YEAR}
+          Equal Pay Day · {epdYear}
         </div>
         <div className="mt-1 font-display text-5xl leading-none text-foreground">
           {epdLong}
         </div>
         <div className="mt-2 text-sm text-muted-foreground">
-          The date in 2026 by which the average woman in {entry.country} has
-          worked enough to match what the average man earned in 2025 —{" "}
+          The date in {epdYear} by which the average woman in {country.country} has
+          worked enough to match what the average man earned in {year} —{" "}
           <span className="font-semibold text-foreground">{unpaid} days</span>{" "}
           into the year.
+          {exact == null && (
+            <span className="block mt-1 text-xs italic">
+              No data for {year}; using nearest year ({refYear}).
+            </span>
+          )}
         </div>
       </div>
 
       <div className="grid grid-cols-2 gap-3 border-t border-border pt-6">
-        <Stat label="Pay gap" value={`${entry.gap.toFixed(1)}%`} accent />
-        <Stat label="Reference year" value={String(entry.year)} />
+        <Stat label="Pay gap" value={`${gap.toFixed(1)}%`} accent />
+        <Stat label="Reference year" value={String(refYear)} />
         <Stat label="A man earns" value={`${currency.symbol}${fmt(salary)}`} />
         <Stat label="A woman earns" value={`${currency.symbol}${fmt(womensEarnings)}`} accent />
         <Stat label="Annual difference" value={`${currency.symbol}${fmt(annualGap)}`} />
@@ -101,9 +112,9 @@ export function Calculator({ selectedIso2, onSelectIso }: Props) {
       </div>
 
       <ShareCard
-        country={entry.country}
-        gap={entry.gap}
-        year={entry.year}
+        country={country.country}
+        gap={gap}
+        year={refYear}
         salary={salary}
         womensEarnings={womensEarnings}
         annualGap={annualGap}
