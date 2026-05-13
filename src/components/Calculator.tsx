@@ -4,6 +4,7 @@ import { ShareCard } from "./ShareCard";
 import { HistoryChart } from "./HistoryChart";
 import { equalPayDayFromGap, formatEPD, daysUnpaid } from "@/lib/equalPayDay";
 import { getGapForYear, getNearestGap } from "@/lib/getGap";
+import { HISTORICAL_GAP } from "@/data/historicalGap";
 
 interface BaseProps {
   selectedIso2: string | null;
