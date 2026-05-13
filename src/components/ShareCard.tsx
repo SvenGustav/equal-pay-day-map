@@ -37,7 +37,7 @@ export function ShareCard(props: Props) {
   };
 
   const handleShare = async () => {
-    const text = `Equal Pay Day in ${props.country}: ${props.equalPayDay}. From this date, women effectively work unpaid for the rest of the year (${props.daysUnpaid} days, ${props.gap.toFixed(1)}% gap).`;
+    const text = `Equal Pay Day 2026 in ${props.country}: ${props.equalPayDay}. That's how far into the year women must work to match what men earned in 2025 (${props.daysUnpaid} days, ${props.gap.toFixed(1)}% gap).`;
     if (navigator.share) {
       try {
         await navigator.share({ title: "EU Pay Gap", text });
@@ -71,8 +71,8 @@ export function ShareCard(props: Props) {
           {props.equalPayDay}
         </div>
         <div className="mt-2 max-w-[32ch] font-display text-xl italic leading-snug text-muted-foreground">
-          From this date, women work the rest of {new Date().getFullYear()}{" "}
-          unpaid — {props.daysUnpaid} days, a {props.gap.toFixed(1)}% gap.
+          The day in 2026 women in {props.country} catch up to men's 2025
+          earnings — {props.daysUnpaid} days in, a {props.gap.toFixed(1)}% gap.
         </div>
 
         <div className="mt-6 grid grid-cols-2 gap-4 border-t border-border pt-4">
