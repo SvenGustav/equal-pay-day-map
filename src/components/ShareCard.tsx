@@ -37,7 +37,7 @@ export function ShareCard(props: Props) {
   };
 
   const handleShare = async () => {
-    const text = `In ${props.country}, women earn ${props.gap.toFixed(1)}% less on average. On a ${props.currency}${fmt(props.salary)} salary, that's ${props.currency}${fmt(props.annualGap)} unpaid per year.`;
+    const text = `Equal Pay Day in ${props.country}: ${props.equalPayDay}. From this date, women effectively work unpaid for the rest of the year (${props.daysUnpaid} days, ${props.gap.toFixed(1)}% gap).`;
     if (navigator.share) {
       try {
         await navigator.share({ title: "EU Pay Gap", text });
