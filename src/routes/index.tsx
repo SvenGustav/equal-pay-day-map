@@ -44,18 +44,19 @@ function Index() {
       <section className="mx-auto max-w-7xl px-6 pt-16 pb-10">
         <div className="max-w-3xl">
           <div className="text-xs font-semibold uppercase tracking-[0.25em] text-[var(--accent-magenta)]">
-            Equal Pay Day · Europe 2025
+            Equal Pay Day · Europe 2026
           </div>
           <h1 className="mt-4 font-display text-6xl leading-[0.95] sm:text-7xl">
-            The day women across Europe stop earning,{" "}
-            <em className="text-[var(--accent-magenta)]">relative to men</em>.
+            How far into 2026 must women work{" "}
+            <em className="text-[var(--accent-magenta)]">to match what men earned in 2025</em>?
           </h1>
           <p className="mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground">
-            Each country is labelled with its <strong className="text-foreground">Equal Pay Day</strong> —
-            the calendar date from which the average woman effectively works
-            unpaid for the rest of the year, given the country's unadjusted
-            gender pay gap. Hover or tap a country, then enter a salary to see
-            what it costs in cash.
+            Each country is labelled with its{" "}
+            <strong className="text-foreground">Equal Pay Day</strong> — the
+            calendar date in 2026 by which the average woman has worked enough
+            to catch up with what the average man earned in the previous year,
+            given the country's unadjusted gender pay gap. Hover or tap a
+            country, then enter a salary to see what the gap costs in cash.
           </p>
         </div>
       </section>

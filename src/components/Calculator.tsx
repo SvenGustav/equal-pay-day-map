@@ -9,7 +9,7 @@ interface Props {
   onSelectIso: (iso: string) => void;
 }
 
-const EPD_YEAR = 2025;
+const EPD_YEAR = 2026;
 
 export function Calculator({ selectedIso2, onSelectIso }: Props) {
   const [salary, setSalary] = useState<number>(50000);
@@ -84,10 +84,10 @@ export function Calculator({ selectedIso2, onSelectIso }: Props) {
           {epdLong}
         </div>
         <div className="mt-2 text-sm text-muted-foreground">
-          From this date until 31 December, women in {entry.country} effectively
-          work <em className="text-foreground">unpaid</em> compared with men —{" "}
+          The date in 2026 by which the average woman in {entry.country} has
+          worked enough to match what the average man earned in 2025 —{" "}
           <span className="font-semibold text-foreground">{unpaid} days</span>{" "}
-          of the year.
+          into the year.
         </div>
       </div>
 
