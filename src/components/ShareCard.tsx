@@ -65,13 +65,14 @@ export function ShareCard(props: Props) {
         }}
       >
         <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--accent-magenta)]">
-          The unpaid year · {props.country}
+          Equal Pay Day · {props.country}
         </div>
         <div className="mt-4 font-display text-6xl leading-[0.95] text-foreground">
-          {props.gap.toFixed(1)}%
+          {props.equalPayDay}
         </div>
-        <div className="mt-2 max-w-[28ch] font-display text-xl italic leading-snug text-muted-foreground">
-          gender pay gap, women vs men, {props.year}
+        <div className="mt-2 max-w-[32ch] font-display text-xl italic leading-snug text-muted-foreground">
+          From this date, women work the rest of {new Date().getFullYear()}{" "}
+          unpaid — {props.daysUnpaid} days, a {props.gap.toFixed(1)}% gap.
         </div>
 
         <div className="mt-6 grid grid-cols-2 gap-4 border-t border-border pt-4">
