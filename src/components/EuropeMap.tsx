@@ -5,17 +5,18 @@ import europe from "@/data/europe.geojson?url";
 import { useQuery } from "@tanstack/react-query";
 import { PAY_GAP } from "@/data/payGap";
 import { equalPayDayFromGap, formatEPD, daysUnpaid } from "@/lib/equalPayDay";
+import { getGapForYear } from "@/lib/getGap";
 
 interface Props {
   selectedIso2: string | null;
   onSelect: (iso2: string) => void;
+  year: number;
 }
 
 const WIDTH = 760;
 const HEIGHT = 720;
-const LABEL_YEAR = 2026;
 
-export function EuropeMap({ selectedIso2, onSelect }: Props) {
+export function EuropeMap({ selectedIso2, onSelect, year }: Props) {
   const [hover, setHover] = useState<{
     x: number; y: number; name: string; gap: number; year: number; epd: string; days: number;
   } | null>(null);
@@ -26,13 +27,15 @@ export function EuropeMap({ selectedIso2, onSelect }: Props) {
     staleTime: Infinity,
   });
 
-  const gapByIso = useMemo(() => {
-    const m = new Map<string, (typeof PAY_GAP)[number]>();
-    PAY_GAP.forEach((d) => m.set(d.isoA2, d));
+  const nameByIso = useMemo(() => {
+    const m = new Map<string, string>();
+    PAY_GAP.forEach((d) => m.set(d.isoA2, d.country));
     return m;
   }, []);
 
-  // Color by days unpaid: 0 days = soft, 75+ days = deep magenta
+  // EPD is shown for the year *after* the reference year
+  const epdYear = year + 1;
+
   const colorScale = useMemo(
     () =>
       scaleLinear<string>()
@@ -48,25 +51,24 @@ export function EuropeMap({ selectedIso2, onSelect }: Props) {
   );
   const pathGen = useMemo(() => geoPath(projection), [projection]);
 
-  // Pre-compute centroids + dates for label layer
   const labels = useMemo(() => {
     if (!geo) return [];
     return geo.features
       .map((f: any) => {
         const iso2 = f.properties.ISO2;
-        const entry = gapByIso.get(iso2);
-        if (!entry) return null;
+        const gap = getGapForYear(iso2, year);
+        if (gap == null) return null;
         const [cx, cy] = pathGen.centroid(f);
         if (!isFinite(cx) || !isFinite(cy)) return null;
-        const epd = equalPayDayFromGap(entry.gap, LABEL_YEAR);
+        const epd = equalPayDayFromGap(gap, epdYear);
         const area = pathGen.area(f);
         return {
           iso2,
           cx,
           cy,
           area,
-          name: entry.country,
-          gap: entry.gap,
+          name: nameByIso.get(iso2) ?? iso2,
+          gap,
           epdShort: formatEPD(epd),
         };
       })
@@ -74,7 +76,7 @@ export function EuropeMap({ selectedIso2, onSelect }: Props) {
         iso2: string; cx: number; cy: number; area: number;
         name: string; gap: number; epdShort: string;
       }>;
-  }, [geo, gapByIso, pathGen]);
+  }, [geo, nameByIso, pathGen, year, epdYear]);
 
   if (!geo) {
     return (
@@ -87,19 +89,12 @@ export function EuropeMap({ selectedIso2, onSelect }: Props) {
   return (
     <div className="relative">
       <svg viewBox={`0 0 ${WIDTH} ${HEIGHT}`} className="h-auto w-full">
-        <defs>
-          <filter id="label-bg" x="-10%" y="-15%" width="120%" height="130%">
-            <feFlood floodColor="oklch(0.97 0.005 85)" floodOpacity="0.92" />
-            <feComposite in="SourceGraphic" operator="over" />
-          </filter>
-        </defs>
-
         <g>
           {geo.features.map((f: any) => {
             const iso2 = f.properties.ISO2;
-            const entry = gapByIso.get(iso2);
-            const days = entry ? daysUnpaid(entry.gap, LABEL_YEAR) : 0;
-            const fill = entry ? colorScale(days) : "oklch(0.9 0.005 85)";
+            const gap = getGapForYear(iso2, year);
+            const days = gap != null ? daysUnpaid(gap, epdYear) : 0;
+            const fill = gap != null ? colorScale(days) : "oklch(0.9 0.005 85)";
             const isSelected = selectedIso2 === iso2;
             const d = pathGen(f) ?? "";
             return (
@@ -109,29 +104,28 @@ export function EuropeMap({ selectedIso2, onSelect }: Props) {
                 fill={fill}
                 stroke={isSelected ? "var(--accent-magenta)" : "oklch(0.97 0.005 85)"}
                 strokeWidth={isSelected ? 2.4 : 0.6}
-                className={entry ? "cursor-pointer transition-opacity hover:opacity-80" : "opacity-40"}
+                className={gap != null ? "cursor-pointer transition-opacity hover:opacity-80" : "opacity-40"}
                 onMouseMove={(e) => {
-                  if (!entry) return;
+                  if (gap == null) return;
                   const rect = (e.currentTarget.ownerSVGElement as SVGSVGElement).getBoundingClientRect();
-                  const epd = equalPayDayFromGap(entry.gap, LABEL_YEAR);
+                  const epd = equalPayDayFromGap(gap, epdYear);
                   setHover({
                     x: e.clientX - rect.left,
                     y: e.clientY - rect.top,
-                    name: entry.country,
-                    gap: entry.gap,
-                    year: entry.year,
+                    name: nameByIso.get(iso2) ?? iso2,
+                    gap,
+                    year,
                     epd: formatEPD(epd, { month: "long", day: "numeric" }),
-                    days: daysUnpaid(entry.gap, LABEL_YEAR),
+                    days: daysUnpaid(gap, epdYear),
                   });
                 }}
                 onMouseLeave={() => setHover(null)}
-                onClick={() => entry && onSelect(iso2)}
+                onClick={() => gap != null && onSelect(iso2)}
               />
             );
           })}
         </g>
 
-        {/* Equal Pay Day labels — only for countries large enough to fit text */}
         <g pointerEvents="none">
           {labels
             .filter((l) => l.area > 280)
@@ -172,11 +166,11 @@ export function EuropeMap({ selectedIso2, onSelect }: Props) {
         >
           <div className="font-display text-base leading-none">{hover.name}</div>
           <div className="mt-1.5 text-[10px] uppercase tracking-widest text-muted-foreground">
-            Equal Pay Day {LABEL_YEAR}
+            Equal Pay Day {epdYear}
           </div>
           <div className="font-display text-xl text-[var(--accent-magenta)]">{hover.epd}</div>
           <div className="mt-1 text-muted-foreground">
-            {hover.days} days unpaid · {hover.gap.toFixed(1)}% gap · {hover.year}
+            {hover.days} days unpaid · {hover.gap.toFixed(1)}% gap · ref. {hover.year}
           </div>
         </div>
       )}
