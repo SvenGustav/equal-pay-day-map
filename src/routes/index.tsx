@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { EuropeMap } from "@/components/EuropeMap";
 import { Calculator } from "@/components/Calculator";
+import { MIN_YEAR, MAX_YEAR } from "@/lib/getGap";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -11,7 +12,7 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "An interactive choropleth of the EU gender pay gap. Map your salary against the gap in each country and download a shareable card.",
+          "An interactive choropleth of the EU gender pay gap from 2007 to 2024. Slide through the years, map your salary against the gap, and download a shareable card.",
       },
     ],
   }),
@@ -19,6 +20,7 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   const [selected, setSelected] = useState<string | null>("DE");
+  const [year, setYear] = useState<number>(MAX_YEAR);
 
   return (
     <main className="min-h-screen bg-background text-foreground">
@@ -44,39 +46,99 @@ function Index() {
       <section className="mx-auto max-w-7xl px-6 pt-16 pb-10">
         <div className="max-w-3xl">
           <div className="text-xs font-semibold uppercase tracking-[0.25em] text-[var(--accent-magenta)]">
-            Equal Pay Day · Europe 2026
+            Equal Pay Day · Europe {year + 1}
           </div>
           <h1 className="mt-4 font-display text-6xl leading-[0.95] sm:text-7xl">
-            How far into 2026 must women work{" "}
-            <em className="text-[var(--accent-magenta)]">to match what men earned in 2025</em>?
+            How far into {year + 1} must women work{" "}
+            <em className="text-[var(--accent-magenta)]">to match what men earned in {year}</em>?
           </h1>
           <p className="mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground">
             Each country is labelled with its{" "}
             <strong className="text-foreground">Equal Pay Day</strong> — the
-            calendar date in 2026 by which the average woman has worked enough
-            to catch up with what the average man earned in the previous year,
-            given the country's unadjusted gender pay gap. Hover or tap a
-            country, then enter a salary to see what the gap costs in cash.
+            calendar date in {year + 1} by which the average woman has worked
+            enough to catch up with what the average man earned the year before.
+            Drag the slider to scrub through {MIN_YEAR}–{MAX_YEAR}.
           </p>
         </div>
       </section>
 
+      <section className="mx-auto max-w-7xl px-6 pb-8">
+        <YearSlider year={year} onChange={setYear} />
+      </section>
+
       <section className="mx-auto grid max-w-7xl grid-cols-1 gap-10 px-6 pb-24 lg:grid-cols-[1.4fr_1fr]">
         <div className="rounded-xl border border-border bg-background/50 p-2">
-          <EuropeMap selectedIso2={selected} onSelect={setSelected} />
+          <EuropeMap selectedIso2={selected} onSelect={setSelected} year={year} />
         </div>
         <div className="rounded-xl border border-border bg-secondary/40 p-6">
-          <Calculator selectedIso2={selected} onSelectIso={setSelected} />
+          <Calculator selectedIso2={selected} onSelectIso={setSelected} year={year} />
         </div>
       </section>
 
       <footer className="border-t border-border">
         <div className="mx-auto max-w-7xl px-6 py-6 text-xs text-muted-foreground">
-          Data: Eurostat, unadjusted gender pay gap (TESEM180), latest year
-          available per country. Negative values mean women earn slightly more
-          on average.
+          Data: Eurostat, unadjusted gender pay gap (TESEM180), {MIN_YEAR}–{MAX_YEAR}.
+          Negative values mean women earn slightly more on average. Countries
+          without data for the selected year are shown in gray.
         </div>
       </footer>
     </main>
+  );
+}
+
+function YearSlider({
+  year,
+  onChange,
+}: {
+  year: number;
+  onChange: (y: number) => void;
+}) {
+  const years: number[] = [];
+  for (let y = MIN_YEAR; y <= MAX_YEAR; y++) years.push(y);
+
+  return (
+    <div className="rounded-xl border border-border bg-secondary/30 p-5">
+      <div className="flex items-baseline justify-between gap-4">
+        <div>
+          <div className="text-[10px] font-bold uppercase tracking-[0.25em] text-muted-foreground">
+            Reference year
+          </div>
+          <div className="font-display text-5xl leading-none text-[var(--accent-magenta)]">
+            {year}
+          </div>
+        </div>
+        <div className="text-right text-xs text-muted-foreground">
+          Equal Pay Day computed for{" "}
+          <span className="font-semibold text-foreground">{year + 1}</span>
+        </div>
+      </div>
+
+      <input
+        type="range"
+        min={MIN_YEAR}
+        max={MAX_YEAR}
+        step={1}
+        value={year}
+        onChange={(e) => onChange(Number(e.target.value))}
+        className="mt-4 w-full accent-[var(--accent-magenta)]"
+        aria-label="Reference year"
+      />
+
+      <div className="mt-2 flex justify-between text-[10px] uppercase tracking-widest text-muted-foreground">
+        {years
+          .filter((y) => y % 2 === (MIN_YEAR % 2))
+          .map((y) => (
+            <button
+              key={y}
+              onClick={() => onChange(y)}
+              className={`tabular-nums transition-colors ${
+                y === year ? "text-[var(--accent-magenta)] font-bold" : "hover:text-foreground"
+              }`}
+            >
+              {y}
+            </button>
+          ))}
+      </div>
+    </div>
   );
 }
