@@ -15,6 +15,7 @@ The format was tight on purpose:
 - Discord stayed open the whole time for questions, progress updates and general chatter
 - Participants got Lovable credits to help them ship something quickly
 
+
 Everyone worked from the same pool of Eurostat datasets:
 
 - Employed persons by job tenure
@@ -31,7 +32,7 @@ The audience was people already comfortable with data — analysts, engineers, d
 
 Picked the unadjusted gender pay gap dataset and turned the percentages into calendar dates — Equal Pay Day per country, 2007–2024, with a slider, a salary calculator, and shareable cards.
 See a Demo of the project: https://equal-pay-day-map.lovable.app/
-
+<img width="1158" height="805" alt="image" src="https://github.com/user-attachments/assets/bd4063fa-4276-4e87-b6c8-29b7de3be39d" />
 ## Built with
 
 Lovable, React, TypeScript, Eurostat open data.
