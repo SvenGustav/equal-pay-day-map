@@ -30,6 +30,7 @@ The audience was people already comfortable with data — analysts, engineers, d
 ## The project
 
 Picked the unadjusted gender pay gap dataset and turned the percentages into calendar dates — Equal Pay Day per country, 2007–2024, with a slider, a salary calculator, and shareable cards.
+See a Demo of the project: https://equal-pay-day-map.lovable.app/
 
 ## Built with
 
